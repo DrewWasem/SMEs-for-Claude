@@ -1,0 +1,39 @@
+name: postgresql-expert
+version: 1.0.0
+description: >
+  Deep expertise in PostgreSQL schema design, migrations, pgvector optimization,
+  table partitioning, Row-Level Security (RLS), and connection pooling. Specialized
+  in COHERANY's database architecture including multi-tenancy, audit logging,
+  and vector similarity search at scale.
+
+author: COHERANY Team
+license: MIT
+domain: [postgresql, database, pgvector, rls, migrations]
+
+# What tools does this SME's subagent need?
+tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+
+# What can someone ask this SME to do?
+capabilities:
+  - "Review migration scripts for safety and correctness"
+  - "Optimize pgvector HNSW indexes for large-scale similarity search"
+  - "Design partitioned table schemas for high-volume data (>1M rows)"
+  - "Audit Row-Level Security policies for fail-closed enforcement"
+  - "Diagnose and fix foreign key constraint violations"
+  - "Review connection pooling configurations"
+  - "Analyze slow queries and recommend indexes"
+  - "Validate migration rollback scripts"
+
+# Which knowledge files to load and when
+context:
+  always:
+    - knowledge/constraints.md
+    - knowledge/heuristics.md
+  on_demand:
+    - knowledge/ontology.md
+    - knowledge/glossary.md
+    - examples/

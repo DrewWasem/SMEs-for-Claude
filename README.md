@@ -64,6 +64,7 @@ Claude spawns the SME as a subagent, loads its domain knowledge, does the review
 | [ece-professor](smes/ece-professor/) | Developmental psychology | Piaget, Vygotsky ZPD, NAEYC/AAP/COPPA compliance, age-band calibration, runtime guardrails |
 | [prompt-writer](smes/prompt-writer/) | Story → system prompts | Claude system prompt authoring, vocabulary contracts, JSON schema, fallback scripts, golden cache |
 | [story-writer](smes/story-writer/) | Narrative design | Story arcs, three-element success formulas, comedy-first failure paths, age-appropriate themes |
+| [postgresql-expert](smes/postgresql-expert/) | PostgreSQL & pgvector | Schema design, migrations, pgvector optimization, RLS, partitioning, connection pooling, query analysis |
 
 ## How It Works
 
