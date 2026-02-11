@@ -60,6 +60,10 @@ Claude spawns the SME as a subagent, loads its domain knowledge, does the review
 | [child-game-design](smes/child-game-design/) | Kids 7-11 game UX | Piaget stages, age-appropriate UX, brand voice, accessibility, comedy-first pedagogy |
 | [3d-game-development](smes/3d-game-development/) | Browser 3D games | Three.js, React Three Fiber, GLTF pipelines, animation, performance, post-processing |
 | [prompt-engineering](smes/prompt-engineering/) | Teaching prompt eng | How to teach specificity through play, feedback design, task scaffolding |
+| [character-director](smes/character-director/) | Character casting & personality | Character selection, personality design, development arcs, animation mapping for 28-character roster |
+| [ece-professor](smes/ece-professor/) | Developmental psychology | Piaget, Vygotsky ZPD, NAEYC/AAP/COPPA compliance, age-band calibration, runtime guardrails |
+| [prompt-writer](smes/prompt-writer/) | Story → system prompts | Claude system prompt authoring, vocabulary contracts, JSON schema, fallback scripts, golden cache |
+| [story-writer](smes/story-writer/) | Narrative design | Story arcs, three-element success formulas, comedy-first failure paths, age-appropriate themes |
 
 ## How It Works
 
