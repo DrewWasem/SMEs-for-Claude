@@ -1,0 +1,33 @@
+name: my-sme-name
+version: 1.0.0
+description: >
+  One paragraph describing what this SME knows deeply.
+  Be specific about the domain, the depth of knowledge,
+  and what makes this SME more than just a general prompt.
+
+author: your-name
+license: MIT
+domain: [keyword1, keyword2, keyword3]
+
+# What tools does this SME's subagent need?
+tools:
+  - Read
+  - Glob
+  - Grep
+
+# What can someone ask this SME to do?
+capabilities:
+  - "Describe capability 1"
+  - "Describe capability 2"
+  - "Describe capability 3"
+
+# Which knowledge files to load and when
+context:
+  always:
+    - knowledge/constraints.md
+    - knowledge/heuristics.md
+  on_demand:
+    - knowledge/ontology.md
+    - knowledge/taste.md
+    - knowledge/glossary.md
+    - examples/
