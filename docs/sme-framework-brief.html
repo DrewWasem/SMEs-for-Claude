@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SME Framework — Subject Matter Experts for Claude Code</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* ── Core Palette ── */
+    --ink: #0B0E14;
+    --ink-soft: #151922;
+    --ink-card: #1C2130;
+    --ink-surface: #242A3A;
+    --ink-border: #2E3548;
+    --ink-border-light: #3A4258;
+
+    /* ── Accent: Electric Teal ── */
+    --teal: #2DD4BF;
+    --teal-deep: #14B8A6;
+    --teal-light: #5EEAD4;
+    --teal-glow: rgba(45, 212, 191, 0.12);
+    --teal-glow-strong: rgba(45, 212, 191, 0.25);
+
+    /* ── Accent: Amber ── */
+    --amber: #F59E0B;
+    --amber-deep: #D97706;
+    --amber-light: #FCD34D;
+    --amber-glow: rgba(245, 158, 11, 0.12);
+
+    /* ── Accent: Violet ── */
+    --violet: #8B5CF6;
+    --violet-deep: #7C3AED;
+    --violet-light: #A78BFA;
+    --violet-glow: rgba(139, 92, 246, 0.12);
+
+    /* ── Accent: Rose ── */
+    --rose: #F43F5E;
+    --rose-light: #FB7185;
+    --rose-glow: rgba(244, 63, 94, 0.10);
+
+    /* ── Accent: Sky ── */
+    --sky: #38BDF8;
+    --sky-deep: #0EA5E9;
+    --sky-glow: rgba(56, 189, 248, 0.12);
+
+    /* ── Accent: Emerald ── */
+    --emerald: #34D399;
+    --emerald-deep: #10B981;
+    --emerald-glow: rgba(52, 211, 153, 0.12);
+
+    /* ── Text ── */
+    --text-bright: #F1F5F9;
+    --text-primary: #CBD5E1;
+    --text-secondary: #94A3B8;
+    --text-dim: #64748B;
+    --text-muted: #475569;
+
+    /* ── Spacing ── */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--ink);
+    color: var(--text-primary);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .display { font-family: 'Outfit', 'Inter', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(145deg, #0B0E14 0%, #151922 20%, #1C2130 45%, #14B8A6 130%);
+    padding: 72px 28px 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink-border);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -60px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 70%);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 40px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+  }
+  .header .grid-dots {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(circle, rgba(45,212,191,0.15) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .header-inner { position: relative; max-width: 760px; margin: 0 auto; }
+  .header .badge {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 20px;
+    background: var(--teal-glow);
+    border: 1px solid rgba(45,212,191,0.3);
+    font-size: 10px; font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 52px; font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -1.5px;
+    line-height: 1.08;
+  }
+  .header h1 .accent { color: var(--teal); }
+  .header p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .header p strong { color: var(--text-bright); font-weight: 600; }
+
+  /* ─── Nav ─── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11,14,20,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--ink-border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-inner {
+    display: flex; gap: 2px;
+    max-width: 760px; margin: 0 auto;
+    padding: 8px 16px;
+  }
+  .nav a {
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav a:hover { background: var(--ink-card); color: var(--teal); }
+
+  /* ─── Main ─── */
+  .main { max-width: 760px; margin: 0 auto; padding: 48px 20px 100px; }
+
+  /* ─── Sections ─── */
+  .section { margin-bottom: 64px; scroll-margin-top: 70px; }
+  .section h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px; font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .section .subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--ink-card);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    border: 1px solid var(--ink-border);
+    margin-bottom: 16px;
+  }
+  .card.glow-teal { border-color: rgba(45,212,191,0.25); box-shadow: 0 0 30px rgba(45,212,191,0.04); }
+  .card.glow-violet { border-color: rgba(139,92,246,0.25); box-shadow: 0 0 30px rgba(139,92,246,0.04); }
+  .card.glow-amber { border-color: rgba(245,158,11,0.25); box-shadow: 0 0 30px rgba(245,158,11,0.04); }
+  .card.accent-teal { border-left: 3px solid var(--teal); }
+  .card.accent-violet { border-left: 3px solid var(--violet); }
+  .card.accent-amber { border-left: 3px solid var(--amber); }
+  .card.accent-sky { border-left: 3px solid var(--sky); }
+  .card.accent-rose { border-left: 3px solid var(--rose); }
+  .card.accent-emerald { border-left: 3px solid var(--emerald); }
+
+  .label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .label.teal { color: var(--teal); }
+  .label.violet { color: var(--violet-light); }
+  .label.amber { color: var(--amber); }
+  .label.sky { color: var(--sky); }
+  .label.rose { color: var(--rose-light); }
+  .label.emerald { color: var(--emerald); }
+  .label.dim { color: var(--text-dim); }
+
+  /* ─── Grids ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  @media (max-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .header h1 { font-size: 36px; }
+  }
+
+  /* ─── Code blocks ─── */
+  pre {
+    background: var(--ink-soft);
+    border: 1px solid var(--ink-border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: var(--text-secondary);
+    margin: 12px 0;
+  }
+  pre .comment { color: var(--text-muted); }
+  pre .keyword { color: var(--violet-light); }
+  pre .string { color: var(--teal-light); }
+  pre .accent { color: var(--amber); }
+  pre .dim { color: var(--text-dim); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--ink-surface);
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: var(--teal);
+  }
+
+  /* ─── Diagram blocks ─── */
+  .diagram {
+    background: var(--ink-soft);
+    border: 1px solid var(--ink-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  /* ─── Comparison table ─── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .compare-table th {
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    border-bottom: 2px solid var(--ink-border);
+    background: var(--ink-soft);
+  }
+  .compare-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--ink-border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  .compare-table td:first-child { color: var(--text-bright); font-weight: 600; }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ─── Feature rows ─── */
+  .feat {
+    display: flex; gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--ink-border);
+  }
+  .feat:last-child { border-bottom: none; }
+  .feat .ico {
+    width: 48px; height: 48px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: var(--ink-surface);
+  }
+  .feat .name { font-size: 15px; font-weight: 700; color: var(--text-bright); }
+  .feat .sub { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
+
+  /* ─── Bullet items ─── */
+  .bullet { font-size: 13px; padding: 5px 0; display: flex; gap: 10px; align-items: flex-start; color: var(--text-secondary); }
+  .bullet .dot { font-size: 14px; line-height: 20px; }
+  .bullet .dot-teal { color: var(--teal); }
+  .bullet .dot-rose { color: var(--rose); }
+  .bullet .dot-amber { color: var(--amber); }
+
+  /* ─── Tint boxes ─── */
+  .tint {
+    padding: 18px;
+    border-radius: var(--radius-md);
+    background: var(--ink-surface);
+  }
+  .tint.teal { background: var(--teal-glow); border: 1px solid rgba(45,212,191,0.15); }
+  .tint.violet { background: var(--violet-glow); border: 1px solid rgba(139,92,246,0.15); }
+  .tint.amber { background: var(--amber-glow); border: 1px solid rgba(245,158,11,0.15); }
+  .tint.sky { background: var(--sky-glow); border: 1px solid rgba(56,189,248,0.15); }
+
+  /* ─── Pill tags ─── */
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .pill.teal { background: var(--teal-glow); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+  .pill.violet { background: var(--violet-glow); color: var(--violet-light); border: 1px solid rgba(139,92,246,0.2); }
+  .pill.amber { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+
+  /* ─── Layer cards ─── */
+  .layer-card {
+    background: var(--ink-card);
+    border: 1px solid var(--ink-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .layer-card:hover { border-color: var(--ink-border-light); }
+  .layer-card .layer-icon { font-size: 28px; margin-bottom: 8px; }
+  .layer-card .layer-name { font-size: 14px; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+  .layer-card .layer-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── SME catalog cards ─── */
+  .sme-card {
+    background: var(--ink-card);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--ink-border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .sme-card:hover { border-color: var(--ink-border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+  .sme-card .sme-icon { font-size: 32px; margin-bottom: 10px; }
+  .sme-card .sme-name { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+  .sme-card .sme-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; }
+  .sme-card .sme-caps { font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── Terminal block ─── */
+  .terminal {
+    background: var(--ink-soft);
+    border: 1px solid var(--ink-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .terminal-bar {
+    background: var(--ink-card);
+    padding: 8px 16px;
+    display: flex; gap: 6px; align-items: center;
+    border-bottom: 1px solid var(--ink-border);
+  }
+  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .terminal-body {
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+  .terminal-body .prompt-char { color: var(--teal); font-weight: 700; }
+  .terminal-body .cmd { color: var(--text-bright); }
+  .terminal-body .output { color: var(--text-dim); }
+  .terminal-body .highlight { color: var(--amber); }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--ink-border);
+    margin-top: 48px;
+  }
+
+  p { margin: 0; }
+  p + p { margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<div class="header">
+  <div class="grid-dots"></div>
+  <div class="header-inner">
+    <div class="badge">Framework Specification v1.0</div>
+    <h1 class="display">Subject Matter<br><span class="accent">Experts.</span></h1>
+    <p>A framework for packaging <strong>deep domain knowledge</strong> into shareable, on-demand modules for Claude Code. SMEs sit alongside your skills, agents, and MCP servers — dormant until called, gone when done.</p>
+  </div>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<div class="nav">
+  <div class="nav-inner">
+    <a href="#concept">The Concept</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#anatomy">Anatomy</a>
+    <a href="#knowledge">Knowledge Tiers</a>
+    <a href="#invocation">Invocation</a>
+    <a href="#catalog">SME Catalog</a>
+    <a href="#create">Create Your Own</a>
+    <a href="#sharing">Sharing</a>
+    <a href="#principles">Principles</a>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="main">
+
+<!-- ─── THE CONCEPT ─── -->
+<div class="section" id="concept">
+  <h2 class="display">The Concept</h2>
+  <div class="subtitle">What exists today, what's missing, and what SMEs add</div>
+
+  <div class="card glow-teal">
+    <div class="label teal">The Gap</div>
+    <p style="font-size:16px;line-height:1.75;color:var(--text-bright)">
+      Claude Code has <strong>skills</strong> (things it can do), <strong>agents</strong> (ways it can delegate), <strong>MCP servers</strong> (tools it can connect to), and <strong>memory</strong> (things it remembers). But it's missing <em>domain expertise</em> — the deep, structured knowledge that turns a generalist into a specialist. An SME fills that gap.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="label dim">What Each Primitive Does</div>
+    <div class="grid-4" style="margin-top:12px">
+      <div class="layer-card">
+        <div class="layer-icon">&#9889;</div>
+        <div class="layer-name">Skills</div>
+        <div class="layer-desc">What Claude can <strong>do</strong>. Discrete actions like "commit", "build cache", "create plan".</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">&#129302;</div>
+        <div class="layer-name">Agents</div>
+        <div class="layer-desc">How Claude <strong>delegates</strong>. Autonomous subprocesses that handle complex tasks.</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">&#128268;</div>
+        <div class="layer-name">MCP Servers</div>
+        <div class="layer-desc">What Claude can <strong>connect to</strong>. External tools, APIs, and data sources.</div>
+      </div>
+      <div class="layer-card" style="border-color:var(--teal);box-shadow:0 0 20px rgba(45,212,191,0.06)">
+        <div class="layer-icon">&#129504;</div>
+        <div class="layer-name" style="color:var(--teal)">SMEs</div>
+        <div class="layer-desc">What Claude deeply <strong>knows</strong>. Domain expertise, judgment, constraints, and taste.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card accent-teal">
+      <div class="label teal">The Specialist Analogy</div>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-secondary)">
+        A skill is like knowing how to use a stethoscope. An agent is like having a medical assistant. An MCP server is like having access to a lab. But an <strong>SME</strong> is like having a cardiologist in the room — someone who knows <em>when</em> to use the stethoscope, <em>what</em> to listen for, <em>what questions</em> to ask, and <em>what "normal" sounds like</em> in this specific domain.
+      </p>
+    </div>
+    <div class="card accent-violet">
+      <div class="label violet">The Concrete Example</div>
+      <pre style="margin-top:8px;font-size:11.5px"><span class="comment">// Without an SME:</span>
+<span class="dim">Skill  =</span> <span class="string">"I can write narration text"</span>
+<span class="dim">Agent  =</span> <span class="string">"I can research, plan, then write it"</span>
+<span class="dim">MCP    =</span> <span class="string">"I can read the project files"</span>
+
+<span class="comment">// With an SME:</span>
+<span class="accent">SME    =</span> <span class="string">"I know this is for kids 7-11, so the</span>
+<span class="string">          narration must be under 20 words, present</span>
+<span class="string">          tense, NEVER say 'Great job!', reference</span>
+<span class="string">          the game world not the child, and make</span>
+<span class="string">          funny fails funnier than success."</span></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label dim">Why Not Just "More CLAUDE.md"?</div>
+    <table class="compare-table">
+      <thead>
+        <tr><th>CLAUDE.md</th><th>SME Framework</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Flat file, everything always loaded</td><td>Tiered knowledge — constraints always, ontology on demand</td></tr>
+        <tr><td>Not shareable as a unit</td><td>Self-contained directory, portable across projects</td></tr>
+        <tr><td>No activation logic</td><td>Dormant until explicitly called</td></tr>
+        <tr><td>Gets huge and unwieldy</td><td>Modular: add/remove SMEs independently</td></tr>
+        <tr><td>Always in context (uses tokens)</td><td>Zero overhead when not in use</td></tr>
+        <tr><td>One project only</td><td>Reusable across any Claude Code project</td></tr>
+        <tr><td>No versioning</td><td>Versioned, updatable, git-friendly</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── ARCHITECTURE ─── -->
+<div class="section" id="architecture">
+  <h2 class="display">Architecture</h2>
+  <div class="subtitle">How SMEs fit into the Claude Code ecosystem — without modifying it</div>
+
+  <div class="card glow-teal">
+    <div class="label teal">Where SMEs Live</div>
+    <p style="font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:16px">
+      SMEs sit <strong style="color:var(--text-bright)">right next to</strong> your existing skills, agents, and memory — same level, same directory pattern, same discoverability.
+    </p>
+    <pre><span class="dim">.claude/</span>
+<span class="dim">├──</span> <span class="keyword">skills/</span>          <span class="comment"># What Claude can DO</span>
+<span class="dim">│   ├──</span> commit/
+<span class="dim">│   ├──</span> research/
+<span class="dim">│   └──</span> <span class="accent">sme/</span>           <span class="comment"># ← The SME runner skill</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="string">smes/</span>            <span class="comment"># What Claude deeply KNOWS</span>
+<span class="dim">│   ├──</span> <span class="string">child-game-design/</span>
+<span class="dim">│   ├──</span> <span class="string">3d-game-dev/</span>
+<span class="dim">│   └──</span> <span class="string">postgres-dba/</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="keyword">agents/</span>          <span class="comment"># How Claude DELEGATES</span>
+<span class="dim">├──</span> <span class="keyword">memory/</span>          <span class="comment"># What Claude REMEMBERS</span>
+<span class="dim">└──</span> <span class="keyword">commands/</span>        <span class="comment"># User slash commands</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="label dim">The On-Demand Lifecycle</div>
+    <p style="font-size:13px;line-height:1.7;color:var(--text-secondary);margin-bottom:16px">
+      SMEs are <strong style="color:var(--text-bright)">completely dormant</strong> until invoked. They load into a subagent, do their work, return the result, and release all context. Zero residual overhead.
+    </p>
+    <div class="diagram">
+      <svg viewBox="0 0 680 200" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:680px">
+        <!-- Normal state -->
+        <rect x="10" y="20" width="140" height="60" rx="12" fill="#1C2130" stroke="#2E3548" stroke-width="1.5"/>
+        <text x="80" y="45" text-anchor="middle" fill="#CBD5E1" font-family="Outfit,sans-serif" font-size="11" font-weight="700">Normal Operation</text>
+        <text x="80" y="62" text-anchor="middle" fill="#64748B" font-family="Inter,sans-serif" font-size="9">Claude + Skills + Agents</text>
+        <text x="80" y="90" text-anchor="middle" fill="#475569" font-family="JetBrains Mono,monospace" font-size="8">SMEs: dormant (0 tokens)</text>
+
+        <!-- Arrow 1 -->
+        <line x1="155" y1="50" x2="195" y2="50" stroke="#2E3548" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        <text x="175" y="42" text-anchor="middle" fill="#64748B" font-family="Inter,sans-serif" font-size="8">/sme</text>
+
+        <!-- Load -->
+        <rect x="200" y="20" width="120" height="60" rx="12" fill="rgba(45,212,191,0.08)" stroke="rgba(45,212,191,0.3)" stroke-width="1.5"/>
+        <text x="260" y="45" text-anchor="middle" fill="#2DD4BF" font-family="Outfit,sans-serif" font-size="11" font-weight="700">Load SME</text>
+        <text x="260" y="62" text-anchor="middle" fill="#5EEAD4" font-family="Inter,sans-serif" font-size="8">manifest + knowledge</text>
+
+        <!-- Arrow 2 -->
+        <line x1="325" y1="50" x2="365" y2="50" stroke="#2E3548" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        <!-- Subagent -->
+        <rect x="370" y="10" width="140" height="80" rx="12" fill="rgba(139,92,246,0.08)" stroke="rgba(139,92,246,0.3)" stroke-width="1.5"/>
+        <text x="440" y="35" text-anchor="middle" fill="#A78BFA" font-family="Outfit,sans-serif" font-size="11" font-weight="700">SME Subagent</text>
+        <text x="440" y="52" text-anchor="middle" fill="#94A3B8" font-family="Inter,sans-serif" font-size="8">Full domain expertise</text>
+        <text x="440" y="66" text-anchor="middle" fill="#94A3B8" font-family="Inter,sans-serif" font-size="8">loaded in context</text>
+        <text x="440" y="80" text-anchor="middle" fill="#64748B" font-family="Inter,sans-serif" font-size="8">Does the work</text>
+
+        <!-- Arrow 3 -->
+        <line x1="515" y1="50" x2="555" y2="50" stroke="#2E3548" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+        <!-- Return -->
+        <rect x="560" y="20" width="110" height="60" rx="12" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.3)" stroke-width="1.5"/>
+        <text x="615" y="42" text-anchor="middle" fill="#34D399" font-family="Outfit,sans-serif" font-size="11" font-weight="700">Return Result</text>
+        <text x="615" y="58" text-anchor="middle" fill="#64748B" font-family="Inter,sans-serif" font-size="8">Context released</text>
+        <text x="615" y="70" text-anchor="middle" fill="#475569" font-family="Inter,sans-serif" font-size="8">SME gone</text>
+
+        <!-- Bottom label -->
+        <rect x="160" y="120" width="360" height="55" rx="10" fill="#1C2130" stroke="#2E3548" stroke-width="1"/>
+        <text x="340" y="142" text-anchor="middle" fill="#94A3B8" font-family="Inter,sans-serif" font-size="10" font-weight="600">Main conversation never polluted</text>
+        <text x="340" y="160" text-anchor="middle" fill="#475569" font-family="Inter,sans-serif" font-size="9">SME knowledge stays in subagent. Parent context stays clean.</text>
+
+        <defs>
+          <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#64748B"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label dim">Non-Breaking Integration</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px">SMEs use existing Claude Code extension points. They never modify anything outside their own directory.</p>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Existing Mechanism</th><th>How SMEs Use It</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>.claude/skills/</code></td><td>SME runner lives here as a standard skill</td></tr>
+        <tr><td><code>Task</code> tool</td><td>SMEs spawn as subagents via the Task tool</td></tr>
+        <tr><td><code>Read/Glob/Grep</code></td><td>SME subagents use standard tools to read project files</td></tr>
+        <tr><td><code>CLAUDE.md</code></td><td>Untouched. SMEs are independent.</td></tr>
+        <tr><td><code>.mcp.json</code></td><td>Untouched. SMEs don't register MCP servers.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── ANATOMY ─── -->
+<div class="section" id="anatomy">
+  <h2 class="display">Anatomy of an SME</h2>
+  <div class="subtitle">Every file has a purpose. Nothing is optional decoration.</div>
+
+  <div class="card glow-violet">
+    <div class="label violet">Directory Structure</div>
+    <pre><span class="string">my-sme/</span>
+<span class="dim">├──</span> <span class="accent">sme.yaml</span>              <span class="comment"># Manifest: identity, capabilities, tool access</span>
+<span class="dim">├──</span> <span class="accent">system-prompt.md</span>       <span class="comment"># THE prompt that creates the domain expert</span>
+<span class="dim">├──</span> <span class="keyword">knowledge/</span>             <span class="comment"># Domain knowledge (tiered loading)</span>
+<span class="dim">│   ├──</span> constraints.md     <span class="comment"># Hard rules — ALWAYS loaded (~50 lines)</span>
+<span class="dim">│   ├──</span> heuristics.md      <span class="comment"># "When X, do Y" — ALWAYS loaded (~100 lines)</span>
+<span class="dim">│   ├──</span> ontology.md        <span class="comment"># Domain model — ON DEMAND (~200 lines)</span>
+<span class="dim">│   ├──</span> taste.md           <span class="comment"># Good/bad examples — ON DEMAND</span>
+<span class="dim">│   └──</span> glossary.md        <span class="comment"># Vocabulary — ON DEMAND</span>
+<span class="dim">├──</span> <span class="keyword">skills/</span>                <span class="comment"># SME-scoped skills (only inside subagent)</span>
+<span class="dim">└──</span> <span class="keyword">examples/</span>              <span class="comment"># Few-shot demonstrations</span></pre>
+  </div>
+
+  <div class="grid-2">
+    <div class="card accent-amber">
+      <div class="label amber">sme.yaml — The Manifest</div>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px">Identity, capabilities, dependencies, and loading configuration.</p>
+      <pre style="font-size:11px"><span class="keyword">name:</span> <span class="string">child-game-design</span>
+<span class="keyword">version:</span> <span class="string">2.0.0</span>
+<span class="keyword">description:</span> <span class="string">></span>
+  <span class="string">Expert in designing AI-powered</span>
+  <span class="string">games for children ages 7-11.</span>
+
+<span class="keyword">tools:</span>
+  <span class="dim">-</span> Read
+  <span class="dim">-</span> Glob
+  <span class="dim">-</span> Grep
+
+<span class="keyword">capabilities:</span>
+  <span class="dim">-</span> <span class="string">"Review kid-facing text"</span>
+  <span class="dim">-</span> <span class="string">"Audit scene scripts"</span>
+  <span class="dim">-</span> <span class="string">"Design game tasks"</span>
+
+<span class="keyword">context:</span>
+  <span class="keyword">always:</span>
+    <span class="dim">-</span> knowledge/constraints.md
+    <span class="dim">-</span> knowledge/heuristics.md
+  <span class="keyword">on_demand:</span>
+    <span class="dim">-</span> knowledge/ontology.md
+    <span class="dim">-</span> knowledge/taste.md</pre>
+    </div>
+    <div class="card accent-teal">
+      <div class="label teal">system-prompt.md — The Brain</div>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px">This single file transforms a generalist Claude into YOUR domain expert. The most important file in any SME.</p>
+      <pre style="font-size:11px"><span class="comment"># Child Game Design SME</span>
+
+<span class="string">You are a Subject Matter Expert</span>
+<span class="string">in designing AI-powered games</span>
+<span class="string">for children ages 7-11.</span>
+
+<span class="comment">## Your Expertise</span>
+<span class="dim">- Piaget's Concrete Operational stage</span>
+<span class="dim">- Age-appropriate UX patterns</span>
+<span class="dim">- Comedy-first pedagogy</span>
+<span class="dim">- Brand voice and visual identity</span>
+
+<span class="comment">## Response Format</span>
+<span class="dim">- Verdict: Pass / Needs Work / Fails</span>
+<span class="dim">- Findings: Specific issues</span>
+<span class="dim">- Recommendations: Concrete fixes</span>
+
+<span class="comment">## You Are Not</span>
+<span class="dim">- A general-purpose assistant</span>
+<span class="dim">- A yes-man</span>
+<span class="dim">- Abstract — always concrete</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── KNOWLEDGE TIERS ─── -->
+<div class="section" id="knowledge">
+  <h2 class="display">Knowledge Tiers</h2>
+  <div class="subtitle">Not all knowledge is loaded at once. Tiers manage the token budget.</div>
+
+  <div class="card">
+    <div class="label dim">The Tiered Loading Model</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px">
+      The "always" tier is small and loads every time. The "on demand" tier is richer and loads only when the subagent determines it needs it. This keeps the base invocation fast and focused.
+    </p>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Tier</th><th>File</th><th>Size</th><th>When</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill teal">Always</span></td>
+          <td>constraints.md</td>
+          <td style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12px">~50 lines</td>
+          <td>Every invocation</td>
+          <td>Hard rules. Non-negotiable. "NEVER do X."</td>
+        </tr>
+        <tr>
+          <td><span class="pill teal">Always</span></td>
+          <td>heuristics.md</td>
+          <td style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12px">~100 lines</td>
+          <td>Every invocation</td>
+          <td>Judgment patterns. "When X, usually do Y."</td>
+        </tr>
+        <tr>
+          <td><span class="pill violet">On Demand</span></td>
+          <td>ontology.md</td>
+          <td style="color:var(--violet-light);font-family:'JetBrains Mono',monospace;font-size:12px">~200 lines</td>
+          <td>When needed</td>
+          <td>Full domain model. Concepts and relationships.</td>
+        </tr>
+        <tr>
+          <td><span class="pill violet">On Demand</span></td>
+          <td>taste.md</td>
+          <td style="color:var(--violet-light);font-family:'JetBrains Mono',monospace;font-size:12px">~150 lines</td>
+          <td>When needed</td>
+          <td>Good/bad examples. Quality calibration.</td>
+        </tr>
+        <tr>
+          <td><span class="pill violet">On Demand</span></td>
+          <td>glossary.md</td>
+          <td style="color:var(--violet-light);font-family:'JetBrains Mono',monospace;font-size:12px">~50 lines</td>
+          <td>When needed</td>
+          <td>Domain vocabulary and terminology.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3">
+    <div class="card accent-rose">
+      <div class="label rose">Constraints</div>
+      <p style="font-size:12px;color:var(--text-dim);line-height:1.6">
+        The <strong style="color:var(--text-secondary)">smallest and most critical</strong> file. Lists things that must NEVER happen. Loaded every time because violating these is always wrong.
+      </p>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);font-style:italic">"NEVER use red for failure."<br>"NEVER say 'Great job!'"</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="label amber">Heuristics</div>
+      <p style="font-size:12px;color:var(--text-dim);line-height:1.6">
+        <strong style="color:var(--text-secondary)">Pattern-matched judgment.</strong> Not absolute rules, but strong defaults. "When you see this situation, usually do this."
+      </p>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);font-style:italic">"When narration exceeds 20 words, trim it."<br>"When a button is smaller than 48px, flag it."</div>
+    </div>
+    <div class="card accent-sky">
+      <div class="label sky">Taste</div>
+      <p style="font-size:12px;color:var(--text-dim);line-height:1.6">
+        <strong style="color:var(--text-secondary)">The most powerful calibration tool.</strong> Good/bad example pairs. Claude learns more from 5 pairs than 50 rules.
+      </p>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);font-style:italic">GOOD: "The monster catches the cake!"<br>BAD: "Great job completing the task!"</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── INVOCATION ─── -->
+<div class="section" id="invocation">
+  <h2 class="display">Invocation</h2>
+  <div class="subtitle">Three ways to call an SME — all producing the same result</div>
+
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="terminal-dot" style="background:#F43F5E"></div>
+      <div class="terminal-dot" style="background:#F59E0B"></div>
+      <div class="terminal-dot" style="background:#34D399"></div>
+    </div>
+    <div class="terminal-body">
+      <span class="comment"># 1. User invokes directly</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">/sme child-game-design</span> <span class="highlight">"Review this narration: 'Great job!'"</span><br>
+      <br>
+      <span class="comment"># 2. List available SMEs</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">/sme list</span><br>
+      <span class="output">  child-game-design    Expert in kids 7-11 game UX</span><br>
+      <span class="output">  3d-game-development  Browser 3D with Three.js/R3F</span><br>
+      <span class="output">  prompt-engineering    Teaching prompt eng through play</span><br>
+      <br>
+      <span class="comment"># 3. Get SME details</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">/sme info child-game-design</span><br>
+      <span class="output">  Capabilities: review text, audit scenes, design tasks...</span><br>
+      <span class="output">  Knowledge: 5 files (constraints, heuristics, ontology...)</span><br>
+      <span class="output">  Tools: Read, Glob, Grep</span><br>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label teal">Example: SME Review in Action</div>
+    <div class="grid-2" style="margin-top:8px">
+      <div class="tint" style="background:var(--ink-surface)">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Input</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;font-style:italic">
+          /sme child-game-design "Review this narration: 'Wonderful work! You successfully completed the challenge by providing detailed prompts.'"
+        </div>
+      </div>
+      <div class="tint" style="background:var(--ink-surface)">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">SME Response</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">
+          <strong style="color:var(--rose-light)">Verdict: Fails Constraints</strong><br>
+          <strong style="color:var(--text-bright)">Findings:</strong> (1) "Wonderful work!" — banned empty praise. (2) "completed the challenge" — "challenge" is banned edu-jargon. (3) "providing detailed prompts" — "prompts" is banned; say "description". (4) 13 words about the kid, 0 about the game world.<br>
+          <strong style="color:var(--teal)">Fix:</strong> "The monster catches the giant cake and does a happy dance! Confetti everywhere."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label dim">Claude Can Also Call SMEs Autonomously</div>
+    <p style="font-size:13px;line-height:1.7;color:var(--text-secondary)">
+      Just like Claude decides when to use the Task tool or spawn an agent, it can decide when to invoke an SME. If it recognizes a task requires domain expertise it doesn't have loaded, it can spawn the appropriate SME subagent, get the expert review, and incorporate the findings — all without the user explicitly calling <code>/sme</code>.
+    </p>
+  </div>
+</div>
+
+<!-- ─── SME CATALOG ─── -->
+<div class="section" id="catalog">
+  <h2 class="display">SME Catalog</h2>
+  <div class="subtitle">Three ready-to-use SMEs — install any one independently</div>
+
+  <div class="grid-3">
+    <div class="sme-card" style="border-top:3px solid var(--teal)">
+      <div class="sme-icon">&#127922;</div>
+      <div class="sme-name">child-game-design</div>
+      <div style="margin-bottom:8px"><span class="pill teal">v2.0.0</span></div>
+      <div class="sme-desc">Expert in designing AI-powered games for children ages 7-11. Piaget stages, age-appropriate UX, brand voice, comedy-first pedagogy, accessibility.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">7 knowledge files:</strong><br>
+        constraints, heuristics, ontology, taste, glossary
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--violet)">
+      <div class="sme-icon">&#127918;</div>
+      <div class="sme-name">3d-game-development</div>
+      <div style="margin-bottom:8px"><span class="pill violet">v1.0.0</span></div>
+      <div class="sme-desc">Expert in browser-based 3D games with React Three Fiber, Three.js, GLTF pipelines, skeletal animation, post-processing, and performance optimization.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
+        constraints, heuristics, ontology
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--amber)">
+      <div class="sme-icon">&#128161;</div>
+      <div class="sme-name">prompt-engineering</div>
+      <div style="margin-bottom:8px"><span class="pill amber">v1.0.0</span></div>
+      <div class="sme-desc">Expert in teaching prompt engineering through play. Specificity ladders, invisible pedagogy, feedback design, system prompt engineering, cache strategy.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">6 knowledge files:</strong><br>
+        constraints, heuristics, ontology, taste
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CREATE YOUR OWN ─── -->
+<div class="section" id="create">
+  <h2 class="display">Create Your Own</h2>
+  <div class="subtitle">A template is included — copy it, fill it in, start using it</div>
+
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="terminal-dot" style="background:#F43F5E"></div>
+      <div class="terminal-dot" style="background:#F59E0B"></div>
+      <div class="terminal-dot" style="background:#34D399"></div>
+    </div>
+    <div class="terminal-body">
+      <span class="comment"># Copy the template</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">cp -r template/ smes/my-domain/</span><br>
+      <br>
+      <span class="comment"># Edit the manifest</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">edit smes/my-domain/sme.yaml</span><br>
+      <br>
+      <span class="comment"># Write the brain</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">edit smes/my-domain/system-prompt.md</span><br>
+      <br>
+      <span class="comment"># Fill in knowledge</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">edit smes/my-domain/knowledge/constraints.md</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">edit smes/my-domain/knowledge/heuristics.md</span><br>
+      <br>
+      <span class="comment"># Install and use</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">cp -r smes/my-domain /project/.claude/smes/</span><br>
+      <span class="prompt-char">$</span> <span class="cmd">/sme my-domain "review this thing"</span><br>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label dim">Writing Tips</div>
+    <div class="grid-2" style="margin-top:8px">
+      <div class="bullet"><span class="dot dot-teal">&#9679;</span><strong style="color:var(--text-bright)">Constraints should be tiny</strong> — ~50 lines. They load every time. Keep them tight and non-negotiable.</div>
+      <div class="bullet"><span class="dot dot-teal">&#9679;</span><strong style="color:var(--text-bright)">Be concrete, not abstract</strong> — "NEVER use red for failure" beats "use appropriate colors."</div>
+      <div class="bullet"><span class="dot dot-teal">&#9679;</span><strong style="color:var(--text-bright)">Taste examples are powerful</strong> — Claude calibrates more from 5 good/bad pairs than 50 rules.</div>
+      <div class="bullet"><span class="dot dot-teal">&#9679;</span><strong style="color:var(--text-bright)">Test with edge cases</strong> — the best SMEs handle ambiguous situations because heuristics cover gray areas.</div>
+      <div class="bullet"><span class="dot dot-amber">&#9679;</span><strong style="color:var(--text-bright)">System prompt is everything</strong> — spend 80% of your effort here. It's the file that creates the expert.</div>
+      <div class="bullet"><span class="dot dot-amber">&#9679;</span><strong style="color:var(--text-bright)">Define what it's NOT</strong> — scope creep kills SMEs. A postgres SME shouldn't give React advice.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label violet">SME Ideas</div>
+    <div class="grid-2" style="margin-top:8px">
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">postgres-dba</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">Query optimization, migration safety, backup procedures, index strategy, performance analysis, EXPLAIN interpretation</div>
+      </div>
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">react-performance</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">Bundle analysis, render optimization, memo patterns, code splitting, lazy loading, profiler interpretation</div>
+      </div>
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">api-security</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">OWASP top 10, auth patterns, rate limiting, input validation, CORS, CSP headers, JWT best practices</div>
+      </div>
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">brand-voice</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">Company tone, approved terminology, do/don't copy examples, audience personas, channel-specific guidelines</div>
+      </div>
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">accessibility</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">WCAG 2.2 compliance, ARIA patterns, keyboard navigation, screen reader testing, color contrast analysis</div>
+      </div>
+      <div class="tint">
+        <div style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:4px">data-privacy</div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5">GDPR, CCPA, data classification, PII handling, retention policies, consent patterns, audit logging</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SHARING ─── -->
+<div class="section" id="sharing">
+  <h2 class="display">Sharing</h2>
+  <div class="subtitle">Each SME is a self-contained directory — share one at a time</div>
+
+  <div class="card">
+    <div class="label teal">Share One SME</div>
+    <div class="terminal" style="margin-top:12px">
+      <div class="terminal-bar">
+        <div class="terminal-dot" style="background:#F43F5E"></div>
+        <div class="terminal-dot" style="background:#F59E0B"></div>
+        <div class="terminal-dot" style="background:#34D399"></div>
+      </div>
+      <div class="terminal-body">
+        <span class="comment"># Zip one SME and send it</span><br>
+        <span class="prompt-char">$</span> <span class="cmd">zip -r child-game-design.zip smes/child-game-design/</span><br>
+        <br>
+        <span class="comment"># Recipient installs it</span><br>
+        <span class="prompt-char">$</span> <span class="cmd">unzip child-game-design.zip -d .claude/smes/</span><br>
+        <br>
+        <span class="comment"># Or just copy the directory</span><br>
+        <span class="prompt-char">$</span> <span class="cmd">cp -r smes/child-game-design /other/project/.claude/smes/</span><br>
+        <br>
+        <span class="comment"># Or git clone just one SME (sparse checkout)</span><br>
+        <span class="prompt-char">$</span> <span class="cmd">git clone --filter=blob:none --sparse &lt;repo&gt;</span><br>
+        <span class="prompt-char">$</span> <span class="cmd">git sparse-checkout set smes/child-game-design</span><br>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label dim">Installation Checklist</div>
+    <div class="grid-2" style="margin-top:8px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:8px">First Time Setup (once per project)</div>
+        <div class="bullet"><span class="dot dot-teal">&#9679;</span>Copy <code>sme-runner/SKILL.md</code> → <code>.claude/skills/sme/SKILL.md</code></div>
+        <div class="bullet"><span class="dot dot-teal">&#9679;</span>Create <code>.claude/smes/</code> directory</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:8px">Per SME Install</div>
+        <div class="bullet"><span class="dot dot-amber">&#9679;</span>Copy SME directory → <code>.claude/smes/&lt;name&gt;/</code></div>
+        <div class="bullet"><span class="dot dot-amber">&#9679;</span>Done. Use <code>/sme &lt;name&gt; "task"</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DESIGN PRINCIPLES ─── -->
+<div class="section" id="principles">
+  <h2 class="display">Design Principles</h2>
+  <div class="subtitle">The rules that keep SMEs clean, composable, and non-breaking</div>
+
+  <div class="card">
+    <div class="feat">
+      <div class="ico" style="background:var(--teal-glow)">&#128564;</div>
+      <div><div class="name">Dormant Until Called</div><div class="sub">Zero context cost when not in use. No tokens consumed, no processing overhead, no interference with normal operation. An SME that isn't invoked is invisible.</div></div>
+    </div>
+    <div class="feat">
+      <div class="ico" style="background:var(--violet-glow)">&#128737;</div>
+      <div><div class="name">Subagent Isolation</div><div class="sub">Each invocation spawns a fresh subagent. No cross-contamination between SMEs, no residual context in the parent conversation. The specialist comes in, does the work, leaves.</div></div>
+    </div>
+    <div class="feat">
+      <div class="ico" style="background:var(--amber-glow)">&#128274;</div>
+      <div><div class="name">Non-Breaking</div><div class="sub">SMEs use existing Claude Code extension points (skills, Task tool, standard file tools). They NEVER modify CLAUDE.md, settings.json, .mcp.json, or any other configuration. Install = copy. Uninstall = delete.</div></div>
+    </div>
+    <div class="feat">
+      <div class="ico" style="background:var(--emerald-glow)">&#128230;</div>
+      <div><div class="name">Self-Contained</div><div class="sub">Every SME is one directory with everything it needs. No external dependencies beyond standard Claude Code tools. No build step, no compilation, no registration ceremony.</div></div>
+    </div>
+    <div class="feat">
+      <div class="ico" style="background:var(--sky-glow)">&#128259;</div>
+      <div><div class="name">Independently Shareable</div><div class="sub">Share one SME at a time. Each is a self-contained directory. Zip it, git it, copy it. The recipient drops it into <code>.claude/smes/</code> and it works.</div></div>
+    </div>
+    <div class="feat">
+      <div class="ico" style="background:var(--rose-glow)">&#128200;</div>
+      <div><div class="name">Composable</div><div class="sub">Multiple SMEs coexist without conflict. Call them independently or chain them sequentially. A task that needs both "3D game dev" and "child game design" expertise can consult both — each in its own subagent.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div class="footer">
+  <div>
+    <div class="display" style="font-size:28px;font-weight:800;color:var(--text-bright);letter-spacing:-0.5px">Subject Matter <span style="color:var(--teal)">Experts.</span></div>
+    <svg viewBox="0 0 300 30" width="200" height="20" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px auto 0">
+      <defs>
+        <linearGradient id="ftrG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#2DD4BF"/>
+          <stop offset="50%" stop-color="#8B5CF6"/>
+          <stop offset="100%" stop-color="#F59E0B"/>
+        </linearGradient>
+        <filter id="ftrGlow" x="-20%" y="-50%" width="140%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+        </filter>
+      </defs>
+      <line x1="30" y1="15" x2="270" y2="15" stroke="url(#ftrG)" stroke-width="2.5" stroke-linecap="round" filter="url(#ftrGlow)" opacity="0.3"/>
+      <line x1="30" y1="15" x2="270" y2="15" stroke="url(#ftrG)" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="80" cy="8" r="2" fill="#2DD4BF" opacity="0.6"/>
+      <circle cx="150" cy="6" r="1.5" fill="#8B5CF6" opacity="0.5"/>
+      <circle cx="220" cy="9" r="2" fill="#F59E0B" opacity="0.6"/>
+    </svg>
+  </div>
+  <div style="font-size:13px;color:var(--text-dim);margin-top:10px">Deep domain knowledge, on demand, for Claude Code.</div>
+  <div style="font-size:11px;color:var(--text-muted);margin-top:12px">SME Framework v1.0 — February 2026 — MIT License</div>
+</div>
+
+</div>
+</body>
+</html>
