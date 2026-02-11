@@ -412,7 +412,7 @@
 <div class="header">
   <div class="grid-dots"></div>
   <div class="header-inner">
-    <div class="badge">Framework Specification v1.0</div>
+    <div class="badge">Framework Specification v2.0</div>
     <h1 class="display">Subject Matter<br><span class="accent">Experts.</span></h1>
     <p>A framework for packaging <strong>deep domain knowledge</strong> into shareable, on-demand modules for Claude Code. SMEs sit alongside your skills, agents, and MCP servers — dormant until called, gone when done.</p>
   </div>
@@ -790,6 +790,10 @@
       <span class="output">  child-game-design    Expert in kids 7-11 game UX</span><br>
       <span class="output">  3d-game-development  Browser 3D with Three.js/R3F</span><br>
       <span class="output">  prompt-engineering    Teaching prompt eng through play</span><br>
+      <span class="output">  character-director   Casting &amp; personality for 28-char roster</span><br>
+      <span class="output">  ece-professor        Developmental psychology &amp; compliance</span><br>
+      <span class="output">  prompt-writer        Story arcs → Claude system prompts</span><br>
+      <span class="output">  story-writer         Narrative design &amp; comedy arcs</span><br>
       <br>
       <span class="comment"># 3. Get SME details</span><br>
       <span class="prompt-char">$</span> <span class="cmd">/sme info child-game-design</span><br>
@@ -830,26 +834,26 @@
 <!-- ─── SME CATALOG ─── -->
 <div class="section" id="catalog">
   <h2 class="display">SME Catalog</h2>
-  <div class="subtitle">Three ready-to-use SMEs — install any one independently</div>
+  <div class="subtitle">Seven ready-to-use SMEs — install any one independently</div>
 
-  <div class="grid-3">
+  <div class="grid-3" style="margin-bottom:16px">
     <div class="sme-card" style="border-top:3px solid var(--teal)">
       <div class="sme-icon">&#127922;</div>
       <div class="sme-name">child-game-design</div>
       <div style="margin-bottom:8px"><span class="pill teal">v2.0.0</span></div>
       <div class="sme-desc">Expert in designing AI-powered games for children ages 7-11. Piaget stages, age-appropriate UX, brand voice, comedy-first pedagogy, accessibility.</div>
       <div class="sme-caps">
-        <strong style="color:var(--text-bright);font-size:10px">7 knowledge files:</strong><br>
+        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
         constraints, heuristics, ontology, taste, glossary
       </div>
     </div>
     <div class="sme-card" style="border-top:3px solid var(--violet)">
       <div class="sme-icon">&#127918;</div>
       <div class="sme-name">3d-game-development</div>
-      <div style="margin-bottom:8px"><span class="pill violet">v1.0.0</span></div>
+      <div style="margin-bottom:8px"><span class="pill violet">v2.0.0</span></div>
       <div class="sme-desc">Expert in browser-based 3D games with React Three Fiber, Three.js, GLTF pipelines, skeletal animation, post-processing, and performance optimization.</div>
       <div class="sme-caps">
-        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
+        <strong style="color:var(--text-bright);font-size:10px">3 knowledge files:</strong><br>
         constraints, heuristics, ontology
       </div>
     </div>
@@ -859,7 +863,47 @@
       <div style="margin-bottom:8px"><span class="pill amber">v1.0.0</span></div>
       <div class="sme-desc">Expert in teaching prompt engineering through play. Specificity ladders, invisible pedagogy, feedback design, system prompt engineering, cache strategy.</div>
       <div class="sme-caps">
-        <strong style="color:var(--text-bright);font-size:10px">6 knowledge files:</strong><br>
+        <strong style="color:var(--text-bright);font-size:10px">4 knowledge files:</strong><br>
+        constraints, heuristics, ontology, taste
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--sky)">
+      <div class="sme-icon">&#127917;</div>
+      <div class="sme-name">character-director</div>
+      <div style="margin-bottom:8px"><span class="pill teal">v2.0.0</span></div>
+      <div class="sme-desc">Casting Director and Acting Coach. Character selection, personality design, development arcs, and cross-task evolution for a 28-character KayKit roster.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
+        constraints, heuristics, ontology, roster, evolution
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--emerald)">
+      <div class="sme-icon">&#128218;</div>
+      <div class="sme-name">ece-professor</div>
+      <div style="margin-bottom:8px"><span class="pill teal">v2.0.0</span></div>
+      <div class="sme-desc">Early Childhood Education professor and developmental psychologist. Piaget, Vygotsky ZPD, NAEYC/AAP/COPPA compliance, runtime guardrail design.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
+        constraints, heuristics, ontology, guidelines, rubric
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--rose)">
+      <div class="sme-icon">&#128221;</div>
+      <div class="sme-name">prompt-writer</div>
+      <div style="margin-bottom:8px"><span class="pill violet">v2.0.0</span></div>
+      <div class="sme-desc">Converts story arcs into Claude system prompts, fallback scripts, and golden cache entries. Vocabulary contracts, JSON schema design, three-tier response system.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">5 knowledge files:</strong><br>
+        constraints, heuristics, ontology, templates, examples
+      </div>
+    </div>
+    <div class="sme-card" style="border-top:3px solid var(--amber)">
+      <div class="sme-icon">&#128214;</div>
+      <div class="sme-name">story-writer</div>
+      <div style="margin-bottom:8px"><span class="pill amber">v2.0.0</span></div>
+      <div class="sme-desc">The Playwright. Story arcs for children's AI game tasks with three-element success formulas, comedy-first failure paths, and age-appropriate themes.</div>
+      <div class="sme-caps">
+        <strong style="color:var(--text-bright);font-size:10px">4 knowledge files:</strong><br>
         constraints, heuristics, ontology, taste
       </div>
     </div>
@@ -1043,7 +1087,7 @@
     </svg>
   </div>
   <div style="font-size:13px;color:var(--text-dim);margin-top:10px">Deep domain knowledge, on demand, for Claude Code.</div>
-  <div style="font-size:11px;color:var(--text-muted);margin-top:12px">SME Framework v1.0 — February 2026 — MIT License</div>
+  <div style="font-size:11px;color:var(--text-muted);margin-top:12px">SME Framework v2.0 — February 2026 — MIT License</div>
 </div>
 
 </div>
