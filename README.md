@@ -59,6 +59,7 @@ Claude spawns the SME as a subagent, loads its domain knowledge, does the review
 |-----|--------|---------------|
 | [child-game-design](smes/child-game-design/) | Kids 7-11 game UX | Piaget stages, age-appropriate UX, brand voice, accessibility, comedy-first pedagogy |
 | [3d-game-development](smes/3d-game-development/) | Browser 3D games | Three.js, React Three Fiber, GLTF pipelines, animation, performance, post-processing |
+| [3d-scale-tester](smes/3d-scale-tester/) | 3D proportion testing | Measure bounding boxes, compute scale multipliers, verify visual proportions via browser automation |
 | [prompt-engineering](smes/prompt-engineering/) | Teaching prompt eng | How to teach specificity through play, feedback design, task scaffolding |
 | [character-director](smes/character-director/) | Character casting & personality | Character selection, personality design, development arcs, animation mapping for 28-character roster |
 | [ece-professor](smes/ece-professor/) | Developmental psychology | Piaget, Vygotsky ZPD, NAEYC/AAP/COPPA compliance, age-band calibration, runtime guardrails |
@@ -87,9 +88,20 @@ When called:
   Subagent returns structured result
       │
       ▼
+  Invocation logged to .sme-session-log (survives compaction)
   Context released — SME is gone
   Main conversation continues (no residual overhead)
 ```
+
+## Automatic Routing (Optional)
+
+By default SMEs are manual — you call them when you need them. But you can wire them into your workflow so they're **suggested automatically** based on what you're working on.
+
+See [integration/routing.md](integration/routing.md) for:
+- SME routing tables (task type → SME mapping)
+- Where to add SME awareness (research, planning, implementation, validation)
+- Compaction survival (session log + hook integration)
+- SME gap detection (when to create a new SME)
 
 ## Anatomy of an SME
 
@@ -145,6 +157,7 @@ See the [template README](template/README.md) for detailed instructions.
 - **Self-contained** — install = copy directory, uninstall = delete directory
 - **Shareable** — each SME is an independent directory, share one at a time
 - **Composable** — multiple SMEs can coexist, called independently or chained
+- **Compaction-safe** — session log preserves SME state across context resets
 
 ## Sharing an SME
 

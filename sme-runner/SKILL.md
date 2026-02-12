@@ -18,9 +18,10 @@ Invoke a Subject Matter Expert (SME) — a domain-specialized subagent with deep
    - The always-load knowledge as initial context
    - The user's task as the prompt
    - Tools from the manifest's `tools` list
-5. The subagent can Read additional knowledge files on demand
-6. Return the structured result to the parent conversation
-7. Subagent context is released — zero residual overhead
+5. The subagent can read additional knowledge files on demand
+6. Log the invocation for compaction survival
+7. Return the structured result to the parent conversation
+8. Subagent context is released — zero residual overhead
 
 ## Invocation
 
@@ -57,7 +58,14 @@ Task(
 )
 ```
 
-### Step 4: Return
+### Step 4: Log
+Append to `.claude/memory/.sme-session-log` (create if doesn't exist):
+```
+[TIMESTAMP] /sme <name> — "<short task summary>" — Result: <1-line outcome>
+```
+This log survives compaction via the pre-compact hook, so post-compact context knows which SMEs were already consulted.
+
+### Step 5: Return
 Present the subagent's response to the user.
 
 ## List Command
@@ -84,3 +92,11 @@ Then install SMEs into:
 ```
 .claude/smes/<sme-name>/
 ```
+
+## Notes
+
+- SMEs are fully dormant until invoked — zero context cost when not in use
+- Each SME runs in its own subagent — multiple SMEs never conflict
+- SME skills are scoped to the subagent — they don't pollute global skill list
+- The subagent can read project files using its granted tools
+- SMEs are self-contained directories — install by copying, uninstall by deleting
